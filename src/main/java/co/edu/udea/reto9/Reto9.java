@@ -8,7 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardOpenOption.APPEND;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 public class Reto9 {
 
@@ -19,27 +23,32 @@ public class Reto9 {
         List<String> lineasArchivo;
         Path rutaRead = Paths.get(rutaArchivoEtherium);
         Path rutaWrite = Paths.get(rutaArchivoNuevo);
-        lineasArchivo = Files.readAllLines(rutaRead);        
+        lineasArchivo = Files.readAllLines(rutaRead);
+        double[] lista = {53.5, 155.5, 15.5, 10, 15.9};
+        
+        //raizLista(lista);
+        System.out.println(raizLista(lista));
 //      try{
 //            crearNuevoArchivo(rutaArchivoNuevo);
 //        }
 //        catch(IOException e){
 //                System.out.println("Error: " + e.getMessage());
 //        }
-        try{
-            for(int i = 1; i < lineasArchivo.size(); i++){
-                escribirPorLineas(rutaWrite,leerPorLineas(rutaArchivoEtherium, i));
-            }
-            desviacionEstandar(rutaArchivoEtherium);
-            System.out.println(promedio(rutaArchivoEtherium));
-            System.out.println(volumenMayor(rutaArchivoEtherium));
-            System.out.println(volumenMenor(rutaArchivoEtherium));
-        } catch(IOException e){
-            System.out.println("Error: " + e.getMessage());
-        }
+//        try{
+//            for(int i = 1; i < lineasArchivo.size(); i++){
+//                escribirPorLineas(rutaWrite,leerPorLineas(rutaArchivoEtherium, i));
+//            }
+//            desviacionEstandar(rutaArchivoEtherium);
+//            System.out.println(promedio(rutaArchivoEtherium));
+//            System.out.println(volumenMayor(rutaArchivoEtherium));
+//            System.out.println(volumenMenor(rutaArchivoEtherium));
+//        } catch(IOException e){
+//            System.out.println("Error: " + e.getMessage());
+//        }
         
         
     }
+    
     public static void crearNuevoArchivo(String ruta) throws IOException{
         Path miRuta = Paths.get(ruta);
         String cadena = "";
@@ -213,5 +222,14 @@ public class Reto9 {
             }
         }
         return menor;
+    }
+    
+    public static List<Double> raizLista(double[] lista){
+        DoubleStream streamDoubles = Arrays.stream(lista);
+        List<Double> raiz = new ArrayList<>();
+        streamDoubles
+                .map(x -> Math.sqrt(x))
+                .forEach(x -> raiz.add(x));
+        return raiz;
     }
 }
