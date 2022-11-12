@@ -26,7 +26,6 @@ public class Reto9 {
         lineasArchivo = Files.readAllLines(rutaRead);
         double[] lista = {53.5, 155.5, 15.5, 10, 15.9};
         
-        //raizLista(lista);
         System.out.println(raizLista(lista));
 //      try{
 //            crearNuevoArchivo(rutaArchivoNuevo);
@@ -228,7 +227,7 @@ public class Reto9 {
         DoubleStream streamDoubles = Arrays.stream(lista);
         List<Double> raiz = new ArrayList<>();
         streamDoubles
-                .map(x -> Math.sqrt(x))
+                .map(Math::sqrt)
                 .forEach(x -> raiz.add(x));
         return raiz;
     }
