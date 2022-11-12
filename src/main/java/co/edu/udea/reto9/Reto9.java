@@ -26,16 +26,17 @@ public class Reto9 {
 
     public static void main(String[] args) throws IOException {
         
-        String rutaArchivoEtherium = "D:\\NetBeansProjects\\Reto9\\ETH-USD.csv";
-        String rutaArchivoNuevo = "D:\\NetBeansProjects\\Reto9\\nuevoArchivo.txt";
+        String rutaArchivoEtherium = "C:\\Users\\WilmarOS\\Documents\\NetBeansProjects\\Reto-9\\ETH-USD.csv";
+        String rutaArchivoNuevo = "C:\\Users\\WilmarOS\\Documents\\NetBeansProjects\\Reto-9\\nuevoArchivo.txt";
 //        try{
 //            crearNuevoArchivo(rutaArchivoNuevo);
-//        }
+//       }
 //        catch(IOException e){
 //                System.out.println("Error: " + e.getMessage());
 //        }
         leerPorLineas2(rutaArchivoEtherium, rutaArchivoNuevo);
         //leerPorLineasSeparando(rutaArchivoEtherium);
+        concepto(rutaArchivoEtherium, 10);
     }
     public static void crearNuevoArchivo(String ruta) throws IOException{
         Path miRuta = Paths.get(ruta);
@@ -44,6 +45,27 @@ public class Reto9 {
         Files.write(miRuta, bytesCadena);
     }
     
+    public static String concepto (String ruta, int indice)throws IOException{
+        Path miRuta = Paths.get(ruta);
+        List<String> lineasArchivo;
+        lineasArchivo = Files.readAllLines(miRuta);
+        String open = lineasArchivo.get(indice);
+        open = open.substring(11, 22);
+        double valor = Double.parseDouble(open);   
+        String resultado = "";
+        if(valor >= 4600){
+            resultado = "muy alto";
+        }else if(valor >= 3100 && valor < 4600){
+            resultado = "alto";
+        }else if(valor >= 2100 && valor < 3100){
+            resultado = "medio";
+        }else if(valor >= 1200 && valor < 2100){
+            resultado = "bajo";
+        }else if(valor < 1200){
+            resultado = "muy bajo";
+        }
+        return resultado;
+    }
    
     public static void leerPorLineas2(String rutaLectura, String rutaEscritura) throws IOException {
         Path rutaRead = Paths.get(rutaLectura);
