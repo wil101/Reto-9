@@ -1,6 +1,5 @@
 package co.edu.udea.reto9;
 
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -11,29 +10,35 @@ import java.nio.file.Paths;
 import static java.nio.file.StandardOpenOption.APPEND;
 import java.util.List;
 
-
-/**
- *
- * @author emanu
- */
 public class Reto9 {
 
     public static void main(String[] args) throws IOException {
         
-        String rutaArchivoEtherium = "C:\\Users\\WilmarOS\\Documents\\NetBeansProjects\\Reto-9\\ETH-USD.csv";
-        String rutaArchivoNuevo = "C:\\Users\\WilmarOS\\Documents\\NetBeansProjects\\Reto-9\\nuevoArchivo.txt";
-//        try{
+        String rutaArchivoEtherium = "D:\\NetBeansProjects\\Reto9\\ETH-USD.csv";
+        String rutaArchivoNuevo = "D:\\NetBeansProjects\\Reto9\\nuevoArchivo.txt";
+        List<String> lineasArchivo;
+        Path rutaRead = Paths.get(rutaArchivoEtherium);
+        Path rutaWrite = Paths.get(rutaArchivoNuevo);
+        lineasArchivo = Files.readAllLines(rutaRead);        
+//      try{
 //            crearNuevoArchivo(rutaArchivoNuevo);
 //        }
 //        catch(IOException e){
 //                System.out.println("Error: " + e.getMessage());
 //        }
-        leerPorLineasYEscribir(rutaArchivoEtherium, rutaArchivoNuevo);
-        //leerPorLineasSeparando(rutaArchivoEtherium);
-        desviacionEstandar(rutaArchivoEtherium);
-        System.out.println(promedio(rutaArchivoEtherium));
-        System.out.println(volumenMayor(rutaArchivoEtherium));
-        System.out.println(volumenMenor(rutaArchivoEtherium));
+        try{
+            for(int i = 1; i < lineasArchivo.size(); i++){
+                escribirPorLineas(rutaWrite,leerPorLineas(rutaArchivoEtherium, i));
+            }
+            desviacionEstandar(rutaArchivoEtherium);
+            System.out.println(promedio(rutaArchivoEtherium));
+            System.out.println(volumenMayor(rutaArchivoEtherium));
+            System.out.println(volumenMenor(rutaArchivoEtherium));
+        } catch(IOException e){
+            System.out.println("Error: " + e.getMessage());
+        }
+        
+        
     }
     public static void crearNuevoArchivo(String ruta) throws IOException{
         Path miRuta = Paths.get(ruta);
@@ -41,133 +46,22 @@ public class Reto9 {
         byte[] bytesCadena = cadena.getBytes();
         Files.write(miRuta, bytesCadena);
     }
-    
-    public static long volumenMayor (String ruta) throws IOException{
-        Path miRuta = Paths.get(ruta);
-        List<String> lineasArchivo;
-        long mayor = 0;
-        lineasArchivo = Files.readAllLines(miRuta);
-        for(int i = 1; i < lineasArchivo.size();i++){ 
-            String volumen = lineasArchivo.get(i);
-            switch (i) {
-                case 221:
-                    volumen = volumen.substring(68,volumen.length());
-                    break;
-                case 222:
-                    volumen = volumen.substring(69, volumen.length());
-                    break;
-                default:
-                    volumen = volumen.substring(71, volumen.length());
-                    break;
-            }
-            long comparadorMayor = Long.parseLong(volumen);
-            if(comparadorMayor >= mayor){
-                mayor = comparadorMayor;
-            }
-        }
-        return mayor; 
-    }
-    public static long volumenMenor (String ruta) throws IOException{
-        Path miRuta = Paths.get(ruta);
-        List<String> lineasArchivo;
-        lineasArchivo = Files.readAllLines(miRuta); 
-        BigInteger meno = new BigInteger("45743399154");
-        long menor = meno.longValue();
-        for(int i = 1; i < lineasArchivo.size();i++){
-            String volumen = lineasArchivo.get(i);
-            switch (i) {
-                case 221:
-                    volumen = volumen.substring(68,volumen.length());
-                    break;
-                case 222:
-                    volumen = volumen.substring(69, volumen.length());
-                    break;
-                default:
-                    volumen = volumen.substring(71, volumen.length());
-                    break;
-            }
-            long comparadorMenor = Long.parseLong(volumen);
-            if(comparadorMenor < menor){
-                menor = comparadorMenor;
-            }
-        }
-        return menor;
-    }
-    
-    
-    
-  public static double promedio (String ruta) throws IOException{
-        Path miRuta = Paths.get(ruta);
-        List<String> lineasArchivo;
-        lineasArchivo = Files.readAllLines(miRuta);
-        double promedio = 0.0;
-        double sumatoria = 0.0;
-        for(int j = 1; j < lineasArchivo.size(); j++){
-            String close = lineasArchivo.get(j);
-            
-            switch (j) {
-                case 221:
-                    close = close.substring(46,56);
-                    break;
-                case 222:
-                    close = close.substring(45,56);
-                    break;
-                default:
-                    close = close.substring(47,58);
-                    break;
-            }
-            double valor = Double.parseDouble(close);
-            sumatoria += valor;
-            //System.out.println(valor);
-        }
-        promedio = sumatoria/(lineasArchivo.size()- 1);
-        return promedio;
-    }
-    
-    public static void desviacionEstandar(String ruta) throws IOException{
-        Path miRuta = Paths.get(ruta);
-        List<String> lineasArchivo;
-        lineasArchivo = Files.readAllLines(miRuta);
-        double varianza = 0.0;
-        double desviacion = 0.0;
-        for(int i = 1; i < lineasArchivo.size(); i++){
-            String close = lineasArchivo.get(i);
-            switch (i) {
-                case 221:
-                    close = close.substring(46,56);
-                    break;
-                case 222:
-                    close = close.substring(45,56);
-                    break;
-                default:
-                    close = close.substring(47,58);
-                    break;
-            }
-            double valor = Double.parseDouble(close);
-            double rango = Math.pow(valor - promedio(ruta), 2);
-            varianza = varianza + rango;
-        }
-        varianza = varianza / (lineasArchivo.size() - 1);
-        desviacion = Math.sqrt(varianza);
-        System.out.println(desviacion);
-    }
-    public static void leerPorLineasYEscribir(String rutaLectura, String rutaEscritura) throws IOException {
+   
+    public static String leerPorLineas(String rutaLectura, Integer indice) throws IOException {
         Path rutaRead = Paths.get(rutaLectura);
-        Path rutaWrite = Paths.get(rutaEscritura);
         List<String> lineasArchivo;
+        String concat = "";
         try {
             lineasArchivo = Files.readAllLines(rutaRead);
-            for(int i = 1; i < lineasArchivo.size(); i++){
-                String cadena = lineasArchivo.get(i);
-                String cadena1 = cadena.substring(0, 10);
-                String tab = "        ";
-                String conceptoValor = concepto(rutaLectura, i);
-                String concat = cadena1.concat(tab + conceptoValor +"\n");
-                escribirPorLineas(rutaWrite, concat);
-            }
+            String cadena = lineasArchivo.get(indice);
+            String cadena1 = cadena.substring(0, 10);
+            String tab = "        ";
+            String conceptoValor = concepto(rutaLectura, indice);
+            concat = cadena1.concat(tab + conceptoValor + "\n");
         } catch (IOException e) {
             System.out.println("Hubo un error al acceder el archivo: " + e.getMessage());
         }
+        return concat;
     }
     
     public static String concepto (String ruta, int indice)throws IOException{
@@ -175,10 +69,12 @@ public class Reto9 {
         List<String> lineasArchivo;
         lineasArchivo = Files.readAllLines(miRuta);
         String open = lineasArchivo.get(indice);
+        int inicioConcept = 11;
+        int finalConcept = 22;
         if(indice == 222){
-            open = open.substring(11, 21);
+            open = open.substring(inicioConcept, finalConcept - 1);
         }else{
-            open = open.substring(11, 22);
+            open = open.substring(inicioConcept, finalConcept);
         }
         double valor = Double.parseDouble(open);   
         String resultado = "";
@@ -196,11 +92,126 @@ public class Reto9 {
         return resultado;
     }
     
+    public static double promedio (String ruta) throws IOException{
+        Path miRuta = Paths.get(ruta);
+        List<String> lineasArchivo;
+        lineasArchivo = Files.readAllLines(miRuta);
+        int inicioCierre = 47;
+        int finalCierre = 58;
+        double promedio = 0.0;
+        double sumatoria = 0.0;
+        for(int j = 1; j < lineasArchivo.size(); j++){
+            String close = lineasArchivo.get(j);
+            
+            switch (j) {
+                case 221:
+                    close = close.substring(inicioCierre - 1,finalCierre - 2);
+                    break;
+                case 222:
+                    close = close.substring(inicioCierre - 2,finalCierre - 2);
+                    break;
+                default:
+                    close = close.substring(inicioCierre,finalCierre);
+                    break;
+            }
+            double valor = Double.parseDouble(close);
+            sumatoria += valor;
+            //System.out.println(valor);
+        }
+        promedio = sumatoria/(lineasArchivo.size()- 1);
+        return promedio;
+    }
+    
+    public static void desviacionEstandar(String ruta) throws IOException{
+        Path miRuta = Paths.get(ruta);
+        List<String> lineasArchivo;
+        lineasArchivo = Files.readAllLines(miRuta);
+        int inicioCierre = 47;
+        int finalCierre = 58;
+        double varianza = 0.0;
+        double desviacion = 0.0;
+        for(int i = 1; i < lineasArchivo.size(); i++){
+            String close = lineasArchivo.get(i);
+            switch (i) {
+                case 221:
+                    close = close.substring(inicioCierre - 1,finalCierre - 2);
+                    break;
+                case 222:
+                    close = close.substring(inicioCierre - 2,finalCierre - 2);
+                    break;
+                default:
+                    close = close.substring(inicioCierre,finalCierre);
+                    break;
+            }
+            double valor = Double.parseDouble(close);
+            double rango = Math.pow(valor - promedio(ruta), 2);
+            varianza = varianza + rango;
+        }
+        varianza = varianza / (lineasArchivo.size() - 1);
+        desviacion = Math.sqrt(varianza);
+        System.out.println(desviacion);
+    }
+    
     public static void escribirPorLineas(Path ruta, String cadena) throws IOException{
         FileChannel fileChannel = FileChannel.open(ruta, APPEND);
         ByteBuffer buffer = ByteBuffer.wrap(cadena.getBytes());
         while(buffer.hasRemaining()){
             fileChannel.write(buffer);
         }
+    }
+    
+    public static long volumenMayor (String ruta) throws IOException{
+        Path miRuta = Paths.get(ruta);
+        List<String> lineasArchivo;
+        int inicioVolumen = 71;
+        long mayor = 0;
+        lineasArchivo = Files.readAllLines(miRuta);
+        for(int i = 1; i < lineasArchivo.size();i++){ 
+            String volumen = lineasArchivo.get(i);
+            switch (i) {
+                case 221:
+                    volumen = volumen.substring(inicioVolumen - 3,volumen.length());
+                    break;
+                case 222:
+                    volumen = volumen.substring(inicioVolumen - 2, volumen.length());
+                    break;
+                default:
+                    volumen = volumen.substring(inicioVolumen, volumen.length());
+                    break;
+            }
+            long comparadorMayor = Long.parseLong(volumen);
+            if(comparadorMayor >= mayor){
+                mayor = comparadorMayor;
+            }
+        }
+        return mayor; 
+    }
+    
+    public static long volumenMenor (String ruta) throws IOException{
+        Path miRuta = Paths.get(ruta);
+        List<String> lineasArchivo;
+        lineasArchivo = Files.readAllLines(miRuta); 
+        int inicioVolumen = 71;
+        BigInteger meno = new BigInteger("45743399154");
+        long menor = meno.longValue();
+        for(int i = 1; i < lineasArchivo.size();i++){
+            String volumen = lineasArchivo.get(i);
+            switch (i) {
+                case 221:
+                    volumen = volumen.substring(inicioVolumen - 3,volumen.length());
+                    break;
+                case 222:
+                    volumen = volumen.substring(inicioVolumen - 2, volumen.length());
+                    break;
+                default:
+                    volumen = volumen.substring(inicioVolumen, volumen.length());
+                    break;
+            }
+            long comparadorMenor = Long.parseLong(volumen);
+            if(comparadorMenor < menor){
+                menor = comparadorMenor;
+            }
+        }
+        return menor;
     }
 }
