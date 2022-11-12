@@ -26,17 +26,16 @@ public class Reto9 {
 
     public static void main(String[] args) throws IOException {
         
-        String rutaArchivoEtherium = "C:\\Users\\WilmarOS\\Documents\\NetBeansProjects\\Reto-9\\ETH-USD.csv";
-        String rutaArchivoNuevo = "C:\\Users\\WilmarOS\\Documents\\NetBeansProjects\\Reto-9\\nuevoArchivo.txt";
+        String rutaArchivoEtherium = "D:\\NetBeansProjects\\Reto9\\ETH-USD.csv";
+        String rutaArchivoNuevo = "D:\\NetBeansProjects\\Reto9\\nuevoArchivo.txt";
 //        try{
 //            crearNuevoArchivo(rutaArchivoNuevo);
-//       }
+//        }
 //        catch(IOException e){
 //                System.out.println("Error: " + e.getMessage());
 //        }
-        leerPorLineas2(rutaArchivoEtherium, rutaArchivoNuevo);
+        leerPorLineasYEscribir(rutaArchivoEtherium, rutaArchivoNuevo);
         //leerPorLineasSeparando(rutaArchivoEtherium);
-        concepto(rutaArchivoEtherium, 10);
     }
     public static void crearNuevoArchivo(String ruta) throws IOException{
         Path miRuta = Paths.get(ruta);
@@ -44,13 +43,36 @@ public class Reto9 {
         byte[] bytesCadena = cadena.getBytes();
         Files.write(miRuta, bytesCadena);
     }
+   
+    public static void leerPorLineasYEscribir(String rutaLectura, String rutaEscritura) throws IOException {
+        Path rutaRead = Paths.get(rutaLectura);
+        Path rutaWrite = Paths.get(rutaEscritura);
+        List<String> lineasArchivo;
+        try {
+            lineasArchivo = Files.readAllLines(rutaRead);
+            for(int i = 1; i < lineasArchivo.size(); i++){
+                String cadena = lineasArchivo.get(i);
+                String cadena1 = cadena.substring(0, 10);
+                String tab = "        ";
+                String conceptoValor = concepto(rutaLectura, i);
+                String concat = cadena1.concat(tab + conceptoValor +"\n");
+                escribirPorLineas(rutaWrite, concat);
+            }
+        } catch (IOException e) {
+            System.out.println("Hubo un error al acceder el archivo: " + e.getMessage());
+        }
+    }
     
     public static String concepto (String ruta, int indice)throws IOException{
         Path miRuta = Paths.get(ruta);
         List<String> lineasArchivo;
         lineasArchivo = Files.readAllLines(miRuta);
         String open = lineasArchivo.get(indice);
-        open = open.substring(11, 22);
+        if(indice == 222){
+            open = open.substring(11, 21);
+        }else{
+            open = open.substring(11, 22);
+        }
         double valor = Double.parseDouble(open);   
         String resultado = "";
         if(valor >= 4600){
@@ -66,70 +88,10 @@ public class Reto9 {
         }
         return resultado;
     }
-   
-    public static void leerPorLineas2(String rutaLectura, String rutaEscritura) throws IOException {
-        Path rutaRead = Paths.get(rutaLectura);
-        Path rutaWrite = Paths.get(rutaEscritura);
-        FileChannel fileChannelWrite = FileChannel.open(rutaWrite, WRITE);
-        List<String> lineasArchivo;
-        //Charset charset = Charset.forName("UTF-8");
-        try {
-            lineasArchivo = Files.readAllLines(rutaRead);
-            for(int i = 1; i < lineasArchivo.size(); i++){
-                String cadena = lineasArchivo.get(i);
-                String cadena1 = cadena.substring(0, 10);
-                String tab = "        ";
-                String concat = cadena1.concat(tab + "\n");
-                ByteBuffer buffer = ByteBuffer.wrap(concat.getBytes());
-                while(buffer.hasRemaining()){
-                    fileChannelWrite.write(buffer);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Hubo un error al acceder el archivo: " + e.getMessage());
-        }
-    }
     
-    
-    public static void leerPorLineas(String rutaLectura, String rutaEscritura) throws IOException {
-        Path rutaRead = Paths.get(rutaLectura);
-        Path rutaWrite = Paths.get(rutaEscritura);
-        List<String> lineasArchivo;
-        FileChannel fileChannelRead = FileChannel.open(rutaRead, READ);
-        FileChannel fileChannelWrite = FileChannel.open(rutaWrite, WRITE);
-        try {
-            lineasArchivo = Files.readAllLines(rutaRead);
-            
-            int j = lineasArchivo.get(0).length();
-            for(int lineaActual = 1; lineaActual < lineasArchivo.size(); lineaActual++){
-                int k = lineasArchivo.get(lineaActual).length() * (lineaActual);
-                if(lineaActual == 1){
-                    fileChannelRead.position(j + 1);
-                } else{
-                    fileChannelRead.position(k - j + lineaActual);
-                }
-                ByteBuffer buffer = ByteBuffer.allocate(10);
-                do {
-                    fileChannelRead.read(buffer);
-                    //escribirPorLineas(rutaWrite, buffer);
-                    String cadena = new String(buffer.array());
-                    String concat = cadena.concat("\n");
-                    buffer = ByteBuffer.wrap(concat.getBytes());  //Wilmar va a organizar los métodos
-                    while(buffer.hasRemaining()){
-                        fileChannelWrite.write(buffer);
-                    }
-                } while (buffer.hasRemaining());
-            }
-            
-        } catch (IOException e) {
-            System.out.println("Hubo un error al acceder el archivo: " + e.getMessage());
-        }
-    }
-    public static void escribirPorLineas(Path ruta, ByteBuffer buffer) throws IOException{
-        FileChannel fileChannel = FileChannel.open(ruta, WRITE);
-        String cadena = new String(buffer.array());
-        String concat = cadena.concat("\n");
-        buffer = ByteBuffer.wrap(concat.getBytes());
+    public static void escribirPorLineas(Path ruta, String cadena) throws IOException{
+        FileChannel fileChannel = FileChannel.open(ruta, APPEND);
+        ByteBuffer buffer = ByteBuffer.wrap(cadena.getBytes());
         while(buffer.hasRemaining()){
             fileChannel.write(buffer);
         }
