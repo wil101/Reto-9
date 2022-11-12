@@ -1,27 +1,14 @@
 package co.edu.udea.reto9;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardOpenOption.APPEND;
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
-import static java.nio.file.StandardOpenOption.READ;
-import static java.nio.file.StandardOpenOption.WRITE;
-import java.util.Arrays;
 import java.util.List;
-/**
- *
- * @author emanu
- */
+
 public class Reto9 {
 
     public static void main(String[] args) throws IOException {
@@ -34,7 +21,9 @@ public class Reto9 {
 //        catch(IOException e){
 //                System.out.println("Error: " + e.getMessage());
 //        }
-        leerPorLineasYEscribir(rutaArchivoEtherium, rutaArchivoNuevo);
+        //leerPorLineasYEscribir(rutaArchivoEtherium, rutaArchivoNuevo);
+        desviacionEstandar(rutaArchivoEtherium);
+        System.out.println(promedio(rutaArchivoEtherium));
         //leerPorLineasSeparando(rutaArchivoEtherium);
     }
     public static void crearNuevoArchivo(String ruta) throws IOException{
@@ -87,6 +76,62 @@ public class Reto9 {
             resultado = "muy bajo";
         }
         return resultado;
+    }
+    
+    public static double promedio (String ruta) throws IOException{
+        Path miRuta = Paths.get(ruta);
+        List<String> lineasArchivo;
+        lineasArchivo = Files.readAllLines(miRuta);
+        double promedio = 0.0;
+        double sumatoria = 0.0;
+        for(int j = 1; j < lineasArchivo.size(); j++){
+            String close = lineasArchivo.get(j);
+            
+            switch (j) {
+                case 221:
+                    close = close.substring(46,56);
+                    break;
+                case 222:
+                    close = close.substring(45,56);
+                    break;
+                default:
+                    close = close.substring(47,58);
+                    break;
+            }
+            double valor = Double.parseDouble(close);
+            sumatoria += valor;
+            //System.out.println(valor);
+        }
+        promedio = sumatoria/(lineasArchivo.size()- 1);
+        return promedio;
+    }
+    
+    public static void desviacionEstandar(String ruta) throws IOException{
+        Path miRuta = Paths.get(ruta);
+        List<String> lineasArchivo;
+        lineasArchivo = Files.readAllLines(miRuta);
+        double varianza = 0.0;
+        double desviacion = 0.0;
+        for(int i = 1; i < lineasArchivo.size(); i++){
+            String close = lineasArchivo.get(i);
+            switch (i) {
+                case 221:
+                    close = close.substring(46,56);
+                    break;
+                case 222:
+                    close = close.substring(45,56);
+                    break;
+                default:
+                    close = close.substring(47,58);
+                    break;
+            }
+            double valor = Double.parseDouble(close);
+            double rango = Math.pow(valor - promedio(ruta), 2);
+            varianza = varianza + rango;
+        }
+        varianza = varianza / (lineasArchivo.size() - 1);
+        desviacion = Math.sqrt(varianza);
+        System.out.println(desviacion);
     }
     
     public static void escribirPorLineas(Path ruta, String cadena) throws IOException{
