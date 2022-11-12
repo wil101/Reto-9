@@ -34,7 +34,7 @@ public class Reto9 {
 //        catch(IOException e){
 //                System.out.println("Error: " + e.getMessage());
 //        }
-        leerPorLineas2(rutaArchivoEtherium);
+        leerPorLineas2(rutaArchivoEtherium, rutaArchivoNuevo);
         //leerPorLineasSeparando(rutaArchivoEtherium);
     }
     public static void crearNuevoArchivo(String ruta) throws IOException{
@@ -45,14 +45,23 @@ public class Reto9 {
     }
     
    
-    public static void leerPorLineas2(String ruta) {
-        Path miRuta = Paths.get(ruta);
+    public static void leerPorLineas2(String rutaLectura, String rutaEscritura) throws IOException {
+        Path rutaRead = Paths.get(rutaLectura);
+        Path rutaWrite = Paths.get(rutaEscritura);
+        FileChannel fileChannelWrite = FileChannel.open(rutaWrite, WRITE);
         List<String> lineasArchivo;
         //Charset charset = Charset.forName("UTF-8");
         try {
-            lineasArchivo = Files.readAllLines(miRuta);
+            lineasArchivo = Files.readAllLines(rutaRead);
             for(int i = 1; i < lineasArchivo.size(); i++){
-                System.out.println(lineasArchivo.get(i));
+                String cadena = lineasArchivo.get(i);
+                String cadena1 = cadena.substring(0, 10);
+                String tab = "        ";
+                String concat = cadena1.concat(tab + "\n");
+                ByteBuffer buffer = ByteBuffer.wrap(concat.getBytes());
+                while(buffer.hasRemaining()){
+                    fileChannelWrite.write(buffer);
+                }
             }
         } catch (IOException e) {
             System.out.println("Hubo un error al acceder el archivo: " + e.getMessage());
