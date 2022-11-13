@@ -1,5 +1,6 @@
 package co.edu.udea.reto9;
 
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -10,23 +11,34 @@ import java.nio.file.Paths;
 import static java.nio.file.StandardOpenOption.APPEND;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
+import java.util.Objects;
+import java.util.stream.DoubleStream;
 
+
+/**
+ *
+ * @author emanu
+ */
 public class Reto9 {
 
     public static void main(String[] args) throws IOException {
         
-        String rutaArchivoEtherium = "D:\\NetBeansProjects\\Reto9\\ETH-USD.csv";
-        String rutaArchivoNuevo = "D:\\NetBeansProjects\\Reto9\\nuevoArchivo.txt";
-        List<String> lineasArchivo;
+        String rutaArchivoEtherium = "C:\\Users\\WilmarOS\\Documents\\NetBeansProjects\\Reto-9\\ETH-USD.csv";
+        String rutaArchivoNuevo = "C:\\Users\\WilmarOS\\Documents\\NetBeansProjects\\Reto-9\\nuevoArchivo.txt";
+List<String> lineasArchivo;
         Path rutaRead = Paths.get(rutaArchivoEtherium);
         Path rutaWrite = Paths.get(rutaArchivoNuevo);
         lineasArchivo = Files.readAllLines(rutaRead);
         double[] lista = {53.5, 155.5, 15.5, 10, 15.9};
+        String[] cadena =  {"jose","jaime","gloria","jaime","calpado"};   
         
+        //raizLista(lista);
         System.out.println(raizLista(lista));
+        System.out.println(listaSet(cadena));
 //      try{
 //            crearNuevoArchivo(rutaArchivoNuevo);
 //        }
@@ -227,8 +239,21 @@ public class Reto9 {
         DoubleStream streamDoubles = Arrays.stream(lista);
         List<Double> raiz = new ArrayList<>();
         streamDoubles
-                .map(Math::sqrt)
+                .map(x -> Math.sqrt(x))
                 .forEach(x -> raiz.add(x));
         return raiz;
     }
+    
+    public static HashSet listaSet(String[] cadena){
+        Stream<String> streamcaracteres = Arrays.stream(cadena);
+        HashSet caracteres = new HashSet();
+//        List<String> caracteres = new ArrayList<>();
+        streamcaracteres
+                .map(x -> x.length())
+                .filter(x -> x > 4)
+                .forEach(x -> caracteres.add(x));
+        return caracteres;  
+    }
 }
+
+
