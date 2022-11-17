@@ -36,7 +36,9 @@ List<String> lineasArchivo;
         double[] lista = {53.5, 155.5, 15.5, 10, 15.9};
         String[] cadena =  {"jose","jaime","gloria","jaime","calpado"};   
         
-        //raizLista(lista);
+        //las funcionalidades estan bien solo quitar los comentarios
+        //tambien utilizar la funcion de crear el archivo y despues esa funcion se deja comentada y se 
+        //sigue trabajando con lo demas para que no genere error
         System.out.println(raizLista(lista));
         System.out.println(listaSet(cadena));
 //      try{
